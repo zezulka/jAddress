@@ -19,6 +19,7 @@ public class ChooseFile {
         frame = new JFrame();
 
         frame.setVisible(true);
+        frame.setTitle(Loader.FILENAME_PROMPT);
         BringToFront();
     }
     public File getFile() {

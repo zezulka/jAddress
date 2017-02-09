@@ -95,8 +95,13 @@ public class AddressList implements Comparable<AddressList> {
     }
     
     public AddressList sort(String args) {
-        SortedSet<AddressEntry> ret = new TreeSet<>(SortFactory.create(args));
-        ret.addAll(this.list);
+        SortedSet<AddressEntry> ret;
+        if(args == null || "".equals(args)) { // no sort specified, therefore using the default one
+            ret = new TreeSet<>(this.list);
+        } else {
+            ret = new TreeSet<>(SortFactory.create(args));
+            ret.addAll(this.list);
+        }
         return new AddressList(ret);
     }
     

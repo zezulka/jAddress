@@ -22,8 +22,8 @@ public class Loader {
             + "8) Quit\n"
             + "\n"
             + "Please choose what you'd like to do with the database:\n";
-    private static final String FILENAME_PROMPT = "Please, enter path to the address book:\n";
-    private static final String ADDRESS_ID_PROMPT = "Please, enter id of the address entry you wish to select:\n";
+    public static final String FILENAME_PROMPT = "Please, enter path to the address book:\n";
+    public static final String ADDRESS_ID_PROMPT = "Please, enter id of the address entry you wish to select:\n";
     private static final ChooseFile CF = new ChooseFile();
 
     private static final AddressBook AB = AddressBook.getInstance();
@@ -38,7 +38,7 @@ public class Loader {
                     break;
                 }
             } catch (NumberFormatException nfe) {
-                System.err.println("\nAn errror has occured while parsing the input: \n" + nfe + "\n\n");
+                System.err.println("\nAn error has occured while parsing the input: \n" + nfe + "\n\n");
             }
 
         }
@@ -119,30 +119,29 @@ public class Loader {
                         break;
                     }
                     System.out.println("When you have finished editing entry, simply hit enter, editation will stop.");
-                    String attr = "-";
-                    while (!attr.equals("")) {
-                        System.out.println("Enter attribute name ('first name'/'surname'/'address'/'email'/'phone') and then its value:");
-                        attr = sc.nextLine();
+                    int attr = 0;
+                    while (attr >= 0) {
+                        System.out.println("Enter attribute index ('first name(1)'/'surname(2)'/'address(3)'/'email(4)'/'phone(5)') and then its value:");
+                        try {
+                            attr = Integer.parseInt(sc.nextLine());
+                        } catch (NumberFormatException nfe) {
+                            attr = -1;
+                        }
                         switch (attr) {
-                            case "":
-                                break;
-                            case "first name":
+                            case 1:
                                 ae.setFirstName(sc.nextLine());
                                 break;
-                            case "surname":
+                            case 2:
                                 ae.setSurname(sc.nextLine());
                                 break;
-                            case "address":
+                            case 3:
                                 ae.setAddress(sc.nextLine());
                                 break;
-                            case "email":
+                            case 4:
                                 ae.setEmail(sc.nextLine());
                                 break;
-                            case "phone":
+                            case 5:
                                 ae.setPhone(sc.nextLine());
-                                break;
-                            default:
-                                System.err.println(attr + " not found.");
                                 break;
                         }
                     }
@@ -177,7 +176,6 @@ public class Loader {
     }
 
     public static File getFilename() {
-        System.out.println(FILENAME_PROMPT);
         return Loader.CF.getFile();
     }
     
