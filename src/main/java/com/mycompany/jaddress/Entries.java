@@ -13,8 +13,8 @@ public enum Entries {
     FIRST_NAME("first name",1),
     SURNAME("surname",2),
     EMAIL("email",3),
-    ADDRESS("address",3),
-    PHONE("phone",3);
+    ADDRESS("address",4),
+    PHONE("phone",5);
     
     private final String name;
     private final int id;
