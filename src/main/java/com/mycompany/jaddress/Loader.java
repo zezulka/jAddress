@@ -1,9 +1,8 @@
-
 package com.mycompany.jaddress;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 /**
  *
@@ -39,23 +38,21 @@ public class Loader {
                 }
             } catch (NumberFormatException nfe) {
                 System.err.println("\nAn error has occured while parsing the input: \n" + nfe + "\n\n");
+            } catch (IOException ex) {
+                System.err.println("I/O error: " + ex);
             }
 
         }
         System.exit(0);
     }
 
-    public static int parse(int i) {
+    public static int parse(int i) throws IOException {
         Scanner sc = new Scanner(System.in);
+        String filename;
         switch (i) {
             case 1: {
-                try {
-                    AB.loadAddressList(Loader.getFilename().toString());
-                    System.out.println(AB.toString());
-                } catch (IOException ioe) {
-                    ioe.printStackTrace(System.err);
-                }
-
+                Loader.getFilename();
+                Loader.showAll();
                 break;
             }
             case 2: {
@@ -69,84 +66,50 @@ public class Loader {
             }
             case 3: {
                 System.out.println("NEW ENTRY CREATION: \n");
-                String in;
-                try {
-                    in = Loader.getFilename().toString();
-                    AB.loadAddressList(in);
-                } catch (IOException ioe) {
-                    ioe.printStackTrace(System.err);
-                    break;
-                }
+                filename = Loader.getFilename();
                 System.out.println("Please, enter values in this order:"
-                        + "\n first name"
-                        + "\n surname"
-                        + "\n address"
-                        + "\n email"
-                        + "\n phone"
-                        + "\n"
                 );
-                AB.addAddressEntry(in,
+                Stream.of(Entries.values()).forEach(e -> System.out.println(e.getName()));
+                AB.addAddressEntry(filename,
                         sc.nextLine(), sc.nextLine(),
                         sc.nextLine(), sc.nextLine(),
                         sc.nextLine());
+                Loader.showAll();
                 break;
             }
             case 4: {
-                try {
-                    String in = Loader.getFilename().toString();
-                    AB.loadAddressList(in);
+                filename = Loader.getFilename();
+                Loader.showAll();
+                System.out.println("Which entry do you wish to remove? " + Loader.ADDRESS_ID_PROMPT);
+                if (AB.removeAddressEntry(filename, Integer.parseInt(sc.nextLine()))) {
                     System.out.println(AB.toString());
-                    System.out.println("Which entry do you wish to remove?" + Loader.ADDRESS_ID_PROMPT);
-                    if (AB.removeAddressEntry(in, Integer.parseInt(sc.nextLine()))) {
-                        System.out.println(AB.toString());
-                    } else {
-                        System.err.println("Index given has not been found in '" + in + "'.");
-                    }
-                } catch (IOException ioe) {
-                    ioe.printStackTrace(System.err);
+                } else {
+                    System.err.println("Index given has not been found in '" + filename + "'.");
                 }
                 break;
             }
             case 5: {
-                try {
-                    String in = Loader.getFilename().toString();
-                    AB.loadAddressList(in);
-                    System.out.println(AB.toString());
-                    System.out.println("Which entry do you wish to edit?" + Loader.ADDRESS_ID_PROMPT);
-                    AddressEntry ae = AB.getAddressEntry(in, Integer.parseInt(sc.nextLine()));
-                    if (ae == null) {
-                        System.err.println("Index given has not been found in '" + in + "'.");
-                        break;
+                filename = Loader.getFilename();
+                Loader.showAll();
+                System.out.println("Which entry do you wish to edit?" + Loader.ADDRESS_ID_PROMPT);
+                AddressEntry ae = AB.getAddressEntry(filename, Integer.parseInt(sc.nextLine()));
+                if (ae == null) {
+                    System.err.println("Index given has not been found in '" + filename + "'.");
+                    break;
+                }
+                System.out.println("When you have finished editing entry, simply hit enter, editation will stop.");
+                int attr = 0;
+                while (attr >= 0) {
+                    System.out.println("Enter attribute index and then its value:\n");
+                    for(Entries e : Entries.values()) {
+                        System.out.println(e.getName() + '(' + e.getId() + ")\n");
                     }
-                    System.out.println("When you have finished editing entry, simply hit enter, editation will stop.");
-                    int attr = 0;
-                    while (attr >= 0) {
-                        System.out.println("Enter attribute index ('first name(1)'/'surname(2)'/'address(3)'/'email(4)'/'phone(5)') and then its value:");
-                        try {
-                            attr = Integer.parseInt(sc.nextLine());
-                        } catch (NumberFormatException nfe) {
-                            attr = -1;
-                        }
-                        switch (attr) {
-                            case 1:
-                                ae.setFirstName(sc.nextLine());
-                                break;
-                            case 2:
-                                ae.setSurname(sc.nextLine());
-                                break;
-                            case 3:
-                                ae.setAddress(sc.nextLine());
-                                break;
-                            case 4:
-                                ae.setEmail(sc.nextLine());
-                                break;
-                            case 5:
-                                ae.setPhone(sc.nextLine());
-                                break;
-                        }
+                    try {
+                        attr = Integer.parseInt(sc.nextLine());
+                    } catch (NumberFormatException nfe) {
+                        attr = -1;
                     }
-                } catch (IOException ioe) {
-                    ioe.printStackTrace(System.err);
+                    ae.setVal(Entries.getEntry(attr), sc.nextLine()); 
                 }
                 break;
             }
@@ -159,14 +122,10 @@ public class Loader {
                 break;
             }
             case 7: {
-                try {
-                    String in = Loader.getFilename().toString();
-                    AB.loadAddressList(in);
-                    System.out.println("Which entry do you wish to find? Please, type index of the entry:\n");
-                    System.out.println(AB.getAddressEntry(in, Integer.parseInt(sc.nextLine())));
-                } catch (IOException ioe) {
-                    ioe.printStackTrace(System.err);
-                }
+                filename = Loader.getFilename();
+                Loader.showAll();
+                System.out.println("Which entry do you wish to find? Please, type index of the entry:\n");
+                System.out.println(AB.getAddressEntry(filename, Integer.parseInt(sc.nextLine())));
                 break;
             }
             case 8:
@@ -175,8 +134,14 @@ public class Loader {
         return 0;
     }
 
-    public static File getFilename() {
-        return Loader.CF.getFile();
+    public static String getFilename() throws IOException {
+        String in = Loader.CF.getFile().toString();
+        AB.loadAddressList(in);
+        return in;
     }
     
+    private static void showAll() {
+        System.out.println(AB.toString());
+    }
+
 }

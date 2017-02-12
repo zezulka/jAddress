@@ -58,12 +58,9 @@ public class FileHandler {
         if(al == null || al.getPath() == null) {
             throw new IllegalArgumentException("path to which the adrress list were to be saved is not available!");
         }
-        
         try (FileWriter fw = new FileWriter(al.getPath().toFile())) {
             CSVWriter writer = new CSVWriter(fw, SEPARATOR);
-            al.getList().forEach(item -> {
-                writer.writeNext(item.getAllVals());
-            });
+            al.getList().forEach(addressEntry -> writer.writeNextWithoutQuotes(addressEntry.getAllAttrs()));
         }
     }
 }

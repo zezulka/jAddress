@@ -110,7 +110,7 @@ public class AddressList implements Comparable<AddressList> {
         StringBuilder builder = new StringBuilder();
         builder = this.getPath() == null ? builder : builder.append("PATH: ").append(this.getPath().toString()).append("\nENTRIES:\n");
         for(AddressEntry ae : this.list) {
-            builder = builder.append(ae.toString()).append("\n");
+            builder = builder.append(ae.toString()).append('\n');
         }
         return builder.toString();
     }

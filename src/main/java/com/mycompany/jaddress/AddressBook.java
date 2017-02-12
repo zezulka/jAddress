@@ -28,7 +28,7 @@ public final class AddressBook {
     }
     
     public boolean loadAddressList(String filename) throws IOException {
-        if(this.contains(filename) != null) {
+        if(filename == null || this.contains(filename) != null) {
             return true;
         }
         return this.addresses.add(FileHandler.load(filename));
@@ -95,6 +95,6 @@ public final class AddressBook {
     
     @Override
     public String toString() {
-        return this.toString(this.addresses);
+        return AddressBook.toString(this.addresses);
     }
 }   

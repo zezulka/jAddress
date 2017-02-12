@@ -25,11 +25,8 @@ public class ChooseFile {
     public File getFile() {
         JFileChooser fc = new JFileChooser();
         if(JFileChooser.APPROVE_OPTION == fc.showOpenDialog(null)){
-            frame.setVisible(false);
+            frame.setVisible(true);
             return fc.getSelectedFile();
-        }else {
-            System.out.println("Next time select a file.");
-            System.exit(1);
         }
         return null;
     }

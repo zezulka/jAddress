@@ -1,7 +1,12 @@
 package com.mycompany.jaddress;
 
 import com.google.common.base.Preconditions;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -11,21 +16,9 @@ public final class AddressEntry implements Comparable<AddressEntry> {
     private static final String NOT_NULL = " cannot be null";
     public static final int NUM_REQ_ARGS = 6;
     private volatile int hashcode;
-    
-    /*REQUIRED*/
-    private int id = 0;
-    private String firstName;
-    private String surname;
-    private String address;
-    private String email;
-    /**
-     * Must be in format: (+XXX )XXX XXX XXX
-     */
-    private String phone;
-
-    /*OPTIONAL*/
-    private String nationality;
-    private String webpage;
+    private final int id;
+    /*HASHMAP OF ALL THE VALUES except id*/
+    private final Map<Entries, String> vals = new HashMap<>();
     
     /**
      * Basic constructor, it does not set optional parameters (use setters instead)
@@ -39,13 +32,13 @@ public final class AddressEntry implements Comparable<AddressEntry> {
      */
     public AddressEntry(int id, String firstName, String surname, String address, String email, String phone) {
         this.id = id;
-        this.firstName = Preconditions.checkNotNull(firstName.trim(), "first name"+NOT_NULL);
-        this.surname =   Preconditions.checkNotNull(surname.trim(), "surname"+NOT_NULL);
-        this.address =   Preconditions.checkNotNull(address.trim(), "address"+NOT_NULL);
+        this.vals.put(Entries.valueOf("first name"), Preconditions.checkNotNull(firstName.trim(), "first name"+NOT_NULL));
+        this.vals.put(Entries.valueOf("surname"), Preconditions.checkNotNull(surname.trim(), "surname"+NOT_NULL));
+        this.vals.put(Entries.valueOf("address"), Preconditions.checkNotNull(address.trim(), "address"+NOT_NULL));
         Preconditions.checkArgument(checkEmailValid(email.trim()));
         Preconditions.checkArgument(checkPhoneValid(phone.trim()));
-        this.email = email;
-        this.phone = phone;
+        this.vals.put(Entries.valueOf("email"), email);
+        this.vals.put(Entries.valueOf("phone"), phone);
     }
     
     /**
@@ -58,9 +51,31 @@ public final class AddressEntry implements Comparable<AddressEntry> {
         this(Integer.parseInt(csvRow[0]), csvRow[1], csvRow[2], csvRow[3], csvRow[4], csvRow[5]);
     }
     
-    public String[] getAllVals() {
-        return new String[]{String.valueOf(this.id), this.getFirstName(), this.getSurname(), this.getAddress(), 
-                            this.getEmail(), this.getPhone(), this.getNationality(), this.getWebpage()};
+    public Set<String> getAllAttrs() {
+        return Stream.of(Entries.values()).map(e -> e.getName()).collect(Collectors.toSet());
+    }
+    
+    /**
+     * Sets value to the given key. In case key does
+     * not exist, operation is not performed and false is returned.
+     * @param key K
+     * @param value V
+     * @return 
+     */
+    public boolean setVal(Entries key, String value) {
+        boolean exists = this.vals.containsKey(key);
+        if(exists) {
+            this.vals.put(key, value);
+        }
+        return exists;
+    }
+    
+    public String getVal(Entries key) {
+        return this.vals.get(key);
+    }
+    
+    public int getId() {
+        return this.id;
     }
     
     private static boolean checkEmailValid(String email) {
@@ -72,70 +87,13 @@ public final class AddressEntry implements Comparable<AddressEntry> {
         return phone == null ? false : phone.matches("^((\\+[0-9]{3}\\s)?[0-9]{3}(\\s[0-9]{3}){2})?$");
     }
     
-
-    public int getId() {
-        return this.id;
-    }
-    
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getWebpage() {
-        return webpage;
-    }
-
-    public void setWebpage(String webpage) {
-        this.webpage = webpage;
-    }
-
-    public String getNationality() {
-        return nationality;
-    }
-
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
-    }
-    
     @Override
     public String toString() {
-        return Arrays.toString(this.getAllVals());
+        StringBuilder sb = new StringBuilder();
+        for(Entries entry : this.vals.keySet()) {
+            sb = sb.append(String.format("%-25s", this.vals.get(entry)));
+        }
+        return sb.toString();
     }
     
     /**
@@ -156,9 +114,7 @@ public final class AddressEntry implements Comparable<AddressEntry> {
         }
         
         AddressEntry ae = (AddressEntry) obj;
-        return ae.address.equals(this.address) && ae.phone.equals(this.phone) &&
-               ae.firstName.equals(this.firstName) && ae.surname.equals(this.surname) && 
-               ae.email.equals(this.email);
+        return this.vals.equals(ae.vals);
     }
 
     @Override
@@ -166,11 +122,9 @@ public final class AddressEntry implements Comparable<AddressEntry> {
         int hash = hashcode;
         if(hash == 0) {
             hash = 17;
-            hash = 31 * hash + this.firstName.hashCode();
-            hash = 31 * hash + this.surname.hashCode();
-            hash = 31 * hash + this.address.hashCode();
-            hash = 31 * hash + this.email.hashCode();
-            hash = 31 * hash + this.phone.hashCode();
+            for(String value : vals.values()) {
+                hash = 31 * hash + value.hashCode();
+            }
             hashcode = hash;
         }
         return hash;

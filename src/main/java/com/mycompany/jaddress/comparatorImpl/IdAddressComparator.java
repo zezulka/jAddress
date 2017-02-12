@@ -15,11 +15,11 @@ import com.mycompany.jaddress.AddressEntry;
 public class IdAddressComparator extends SkeletonAddressComparator implements AddressComparator {
 
     public IdAddressComparator() {
-        super(null);
+        super(null, null);
     }
     
     public IdAddressComparator(AddressComparator next) {
-        super(next);
+        super(next, null);
     }
     
     @Override

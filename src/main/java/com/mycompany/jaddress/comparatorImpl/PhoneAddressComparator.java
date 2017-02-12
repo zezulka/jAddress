@@ -6,7 +6,7 @@
 package com.mycompany.jaddress.comparatorImpl;
 
 import com.mycompany.jaddress.AddressComparator;
-import com.mycompany.jaddress.AddressEntry;
+import com.mycompany.jaddress.Entries;
 
 /**
  *
@@ -15,17 +15,6 @@ import com.mycompany.jaddress.AddressEntry;
 public class PhoneAddressComparator extends SkeletonAddressComparator implements AddressComparator {
 
     public PhoneAddressComparator(AddressComparator next) {
-        super(next);
+        super(next, Entries.PHONE);
     }
-
-    @Override
-    public int compare(AddressEntry t, AddressEntry t1) {
-        String s1 = t.getPhone();
-        String s2 = t1.getPhone();
-        if(s1 == null || s2 == null) {
-            return this.getNext().compare(t, t1);
-        }
-        return s1.compareTo(s2);
-    }
-    
 }
