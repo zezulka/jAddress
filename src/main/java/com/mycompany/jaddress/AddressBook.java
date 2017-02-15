@@ -1,6 +1,7 @@
 package com.mycompany.jaddress;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,8 +36,9 @@ public final class AddressBook {
     }
     
     private AddressList contains(String path) {
+        Path p = Paths.get(path);
         for(AddressList a : addresses) {
-            if(a != null && a.getPath().equals(Paths.get(path))) {
+            if(a != null && a.getPath().equals(p)) {
                 return a;
             }
         }
@@ -68,11 +70,6 @@ public final class AddressBook {
             ret.addEntry(firstName, surname, address, email, phone);
         }
     }
-    
-//    public void editAddressEntry(String path, int i) {
-//        AddressEntry ret = this.getAddressEntry(path, i);
-//        //TO DO
-//    }
     
     public AddressEntry getAddressEntry(String path, int id) {
         AddressList ret = this.contains(path);

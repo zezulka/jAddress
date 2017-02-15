@@ -32,7 +32,7 @@ public class ChooseFile {
     }
 
     private void BringToFront() {                  
-                    frame.setExtendedState(JFrame.ICONIFIED);
+            frame.setExtendedState(JFrame.ICONIFIED);
             frame.setExtendedState(JFrame.NORMAL);
 
     }

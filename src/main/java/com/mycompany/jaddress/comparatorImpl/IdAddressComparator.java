@@ -28,7 +28,7 @@ public class IdAddressComparator extends SkeletonAddressComparator implements Ad
         if(result != 0) {
             return result;
         }
-        throw new IllegalStateException("This should not happen!");
+        throw new IllegalStateException("ERROR: there are at least two objects with the same id: " + t.getId());
         //return this.getNext().compare(t, t1);
     }
     

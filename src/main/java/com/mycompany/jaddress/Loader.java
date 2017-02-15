@@ -1,5 +1,6 @@
 package com.mycompany.jaddress;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.stream.Stream;
@@ -135,7 +136,8 @@ public class Loader {
     }
 
     public static String getFilename() throws IOException {
-        String in = Loader.CF.getFile().toString();
+        File chosenFile = Loader.CF.getFile();
+        String in = chosenFile == null ? null : chosenFile.toString();
         AB.loadAddressList(in);
         return in;
     }
