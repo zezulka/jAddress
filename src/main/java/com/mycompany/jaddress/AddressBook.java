@@ -28,11 +28,18 @@ public final class AddressBook {
         return ret;
     }
     
+    /**
+     * Loads address list stored in the file pointed by {@code filename}.
+     * @param filename
+     * @return false iff address list is only contained in this instance, true otherwise.
+     * @throws IOException in case I/O error occurs
+     */
     public boolean loadAddressList(String filename) throws IOException {
         if(filename == null || this.contains(filename) != null) {
             return true;
         }
-        return this.addresses.add(FileHandler.load(filename));
+        AddressList al = FileHandler.load(filename);
+        return al.getNumEntries() == 0 ? true : this.addresses.add(al);
     }
     
     private AddressList contains(String path) {

@@ -19,7 +19,8 @@ public class Loader {
             + "5) Edit an existing entry\n"
             + "6) Sort the address book\n"
             + "7) Search for a specific entry\n"
-            + "8) Quit\n"
+            + "8) SHOW ALL SELECTED\n"
+            + "9) Quit\n"
             + "\n"
             + "Please choose what you'd like to do with the database:\n";
     public static final String FILENAME_PROMPT = "Please, enter path to the address book:\n";
@@ -129,7 +130,10 @@ public class Loader {
                 System.out.println(AB.getAddressEntry(filename, Integer.parseInt(sc.nextLine())));
                 break;
             }
-            case 8:
+            case 8: {
+                System.out.println(AB.toString());
+            }
+            case 9:
                 return -1; //exit
         }
         return 0;

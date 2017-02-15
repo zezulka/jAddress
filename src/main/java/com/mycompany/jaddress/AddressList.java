@@ -35,6 +35,10 @@ public class AddressList implements Comparable<AddressList> {
         return Collections.unmodifiableSortedSet(this.list);
     }
     
+    public int getNumEntries() {
+        return this.list == null ? 0 : this.list.size();
+    }
+    
     public void addEntry(String[] csvRow) {
         this.addEntry(new AddressEntry(csvRow));
     }
@@ -64,10 +68,6 @@ public class AddressList implements Comparable<AddressList> {
     public boolean removeEntry(int id) {
         AddressEntry ae = this.getEntry(id);
         return this.list.remove(ae);
-    }
-    
-    public int getNumEntries() {
-        return this.list.size();
     }
     
     public Path getPath() {

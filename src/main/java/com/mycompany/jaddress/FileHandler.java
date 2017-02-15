@@ -12,7 +12,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,16 +34,20 @@ public class FileHandler {
     public static AddressList load(String filename) throws IOException {
         AddressList result = new AddressList();
         try (FileReader fr = new FileReader(filename)) {
+            int skipped = 0; // num of skipped values
             result.setPath(Paths.get(filename));
             CSVReader reader = new CSVReader(fr, SEPARATOR);
             List<String[]> file = reader.readAll();
             for(Iterator<String[]> i = file.iterator(); i.hasNext();) {
                 String[] row = i.next();
                 if(row.length < AddressEntry.NUM_REQ_ARGS) {
-                    throw new IllegalArgumentException(Arrays.toString(row) + " <- not enough values, therefore not valid entry");
+                    skipped++;
+                    continue;
                 }
                 result.addEntry(row);
             }
+            System.out.println("Done loading. '" + filename  + "' contained " + Integer.toString(result.getNumEntries() + skipped) + " entries of which " + skipped
+            + " were skipped.");
         }
         return result;
     }

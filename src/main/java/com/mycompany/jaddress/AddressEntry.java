@@ -31,13 +31,13 @@ public final class AddressEntry implements Comparable<AddressEntry> {
      */
     public AddressEntry(int id, String firstName, String surname, String address, String email, String phone) {
         this.id = id;
-        this.vals.put(Entries.valueOf("first name"), Preconditions.checkNotNull(firstName.trim(), "first name"+NOT_NULL));
-        this.vals.put(Entries.valueOf("surname"), Preconditions.checkNotNull(surname.trim(), "surname"+NOT_NULL));
-        this.vals.put(Entries.valueOf("address"), Preconditions.checkNotNull(address.trim(), "address"+NOT_NULL));
+        this.vals.put(Entries.FIRST_NAME, Preconditions.checkNotNull(firstName.trim(), "first name"+NOT_NULL));
+        this.vals.put(Entries.SURNAME, Preconditions.checkNotNull(surname.trim(), "surname"+NOT_NULL));
+        this.vals.put(Entries.ADDRESS, Preconditions.checkNotNull(address.trim(), "address"+NOT_NULL));
         Preconditions.checkArgument(checkEmailValid(email.trim()));
         Preconditions.checkArgument(checkPhoneValid(phone.trim()));
-        this.vals.put(Entries.valueOf("email"), email);
-        this.vals.put(Entries.valueOf("phone"), phone);
+        this.vals.put(Entries.EMAIL, email);
+        this.vals.put(Entries.PHONE, phone);
     }
     
     /**
