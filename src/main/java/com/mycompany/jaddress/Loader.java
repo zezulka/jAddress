@@ -25,6 +25,7 @@ public class Loader {
             + "Please choose what you'd like to do with the database:\n";
     public static final String FILENAME_PROMPT = "Please, enter path to the address book:\n";
     public static final String ADDRESS_ID_PROMPT = "Please, enter id of the address entry you wish to select:\n";
+    private static final String LIST_ID_PROMPT = "Which list do you wish to modify? Please, enter list index:\n";
     private static final ChooseFile CF = new ChooseFile();
 
     private static final AddressBook AB = AddressBook.getInstance();
@@ -68,7 +69,8 @@ public class Loader {
             }
             case 3: {
                 System.out.println("NEW ENTRY CREATION: \n");
-                filename = Loader.getFilename();
+                System.out.println(Loader.LIST_ID_PROMPT);
+                filename = Loader.getListPath(sc.nextLine());
                 System.out.println("Please, enter values in this order:"
                 );
                 Stream.of(Entries.values()).forEach(e -> System.out.println(e.getName()));
@@ -80,7 +82,7 @@ public class Loader {
                 break;
             }
             case 4: {
-                filename = Loader.getFilename();
+                filename = Loader.getListPath(sc.nextLine());
                 Loader.showAll();
                 System.out.println("Which entry do you wish to remove? " + Loader.ADDRESS_ID_PROMPT);
                 if (AB.removeAddressEntry(filename, Integer.parseInt(sc.nextLine()))) {
@@ -91,7 +93,7 @@ public class Loader {
                 break;
             }
             case 5: {
-                filename = Loader.getFilename();
+                filename = Loader.getListPath(sc.nextLine());
                 Loader.showAll();
                 System.out.println("Which entry do you wish to edit?" + Loader.ADDRESS_ID_PROMPT);
                 AddressEntry ae = AB.getAddressEntry(filename, Integer.parseInt(sc.nextLine()));
@@ -124,7 +126,7 @@ public class Loader {
                 break;
             }
             case 7: {
-                filename = Loader.getFilename();
+                filename = Loader.getListPath(sc.nextLine());
                 Loader.showAll();
                 System.out.println("Which entry do you wish to find? Please, type index of the entry:\n");
                 System.out.println(AB.getAddressEntry(filename, Integer.parseInt(sc.nextLine())));
@@ -132,6 +134,7 @@ public class Loader {
             }
             case 8: {
                 System.out.println(AB.toString());
+                break;
             }
             case 9:
                 return -1; //exit
@@ -149,5 +152,29 @@ public class Loader {
     private static void showAll() {
         System.out.println(AB.toString());
     }
-
+    
+    private static String getListPathByIndex(int i) {
+        for(AddressList a : Loader.AB.getAll()) {
+            if(a.getId() == i) {
+                return a.getPath().toString();
+            }
+        }
+        return "";
+    }
+    
+    /**
+     * 
+     * @param in
+     * @return -1 in case nonnumeric (or nonexistent) value was passed, valid index value otherwise
+     */
+    private static String getListPath(String in) {
+        try {
+            int i =  Integer.valueOf(in);
+            return getListPathByIndex(i);
+        } catch(NumberFormatException ex) {
+            return "";
+        }
+        
+    }
+    
 }

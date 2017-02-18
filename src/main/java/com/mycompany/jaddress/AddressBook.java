@@ -3,6 +3,7 @@ package com.mycompany.jaddress;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
@@ -14,7 +15,7 @@ import java.util.TreeSet;
  */
 public final class AddressBook {
     private static final AddressBook ADDRBOOK = new AddressBook(); //Singleton
-    private final Set<AddressList> addresses = new HashSet<>();
+    private static final Set<AddressList> ADDRESSES = new HashSet<>();
     
     private AddressBook() {}
     
@@ -24,7 +25,7 @@ public final class AddressBook {
     
     public SortedSet<AddressList> sort(String args) {
         SortedSet<AddressList> ret = new TreeSet<>();
-        this.addresses.forEach(list -> ret.add(list.sort(args)));
+        ADDRESSES.forEach(list -> ret.add(list.sort(args)));
         return ret;
     }
     
@@ -39,12 +40,12 @@ public final class AddressBook {
             return true;
         }
         AddressList al = FileHandler.load(filename);
-        return al.getNumEntries() == 0 ? true : this.addresses.add(al);
+        return al.getNumEntries() == 0 ? true : ADDRESSES.add(al);
     }
     
     private AddressList contains(String path) {
         Path p = Paths.get(path);
-        for(AddressList a : addresses) {
+        for(AddressList a : ADDRESSES) {
             if(a != null && a.getPath().equals(p)) {
                 return a;
             }
@@ -57,7 +58,7 @@ public final class AddressBook {
         if(ret == null) {
             return false;
         }
-        return this.addresses.remove(ret);
+        return ADDRESSES.remove(ret);
     }
     
     /**
@@ -84,9 +85,21 @@ public final class AddressBook {
     }
     
     public void save() throws IOException {
-        for(AddressList a : addresses) {
+        for(AddressList a : ADDRESSES) {
             FileHandler.save(a);
         }
+    }
+    
+    public Set<AddressList> getAll() {
+        return Collections.unmodifiableSet(ADDRESSES);
+    }
+    
+    public String getAllListNames() {
+        StringBuilder sb = new StringBuilder();
+        for(AddressList a : ADDRESSES) {
+            sb = sb.append(String.format("%-11s", Integer.toString(a.getId()))).append(a.getPath().toFile().getName()).append('\n');
+        }
+        return sb.toString();
     }
     
     public static String toString(Set<AddressList> set) {
@@ -99,6 +112,6 @@ public final class AddressBook {
     
     @Override
     public String toString() {
-        return AddressBook.toString(this.addresses);
+        return AddressBook.toString(ADDRESSES);
     }
 }   

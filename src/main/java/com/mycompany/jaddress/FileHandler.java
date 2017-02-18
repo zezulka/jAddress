@@ -21,6 +21,7 @@ import java.util.List;
  */
 public class FileHandler {
     private static final char SEPARATOR = ';';
+    private static int HIGHEST_VAL = 0;
     
     private FileHandler() {}
     
@@ -32,7 +33,8 @@ public class FileHandler {
      * @return read address list (unique entries only!)
      */
     public static AddressList load(String filename) throws IOException {
-        AddressList result = new AddressList();
+        AddressList result = new AddressList(HIGHEST_VAL);
+        HIGHEST_VAL++;
         try (FileReader fr = new FileReader(filename)) {
             int skipped = 0; // num of skipped values
             result.setPath(Paths.get(filename));

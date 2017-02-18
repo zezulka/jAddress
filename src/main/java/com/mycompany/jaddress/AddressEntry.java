@@ -16,7 +16,6 @@ public final class AddressEntry implements Comparable<AddressEntry> {
     public static final int NUM_REQ_ARGS = 6;
     private volatile int hashcode;
     private final int id;
-    /*HASHMAP OF ALL THE VALUES except id*/
     private final Map<Entries, String> vals = new HashMap<>();
     
     /**

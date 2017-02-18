@@ -22,12 +22,15 @@ public class AddressList implements Comparable<AddressList> {
     private volatile int hashcode;
     private final SortedSet<AddressEntry> list;
     private static final int LIMIT = 256;
+    private final int id;
     
-    public AddressList() {
+    public AddressList(int id) {
+        this.id = id;
         this.list = new TreeSet<>();
     }
     
-    public AddressList(SortedSet<AddressEntry> list) {
+    public AddressList(int id, SortedSet<AddressEntry> list) {
+        this.id = id;
         this.list = new TreeSet<>(list);
     }
     
@@ -74,6 +77,10 @@ public class AddressList implements Comparable<AddressList> {
         return this.path;
     }
     
+    public int getId() {
+        return this.id;
+    }
+    
     public void setPath(Path path) {
         this.path = path;
     }
@@ -102,7 +109,7 @@ public class AddressList implements Comparable<AddressList> {
             ret = new TreeSet<>(SortFactory.create(args));
             ret.addAll(this.list);
         }
-        return new AddressList(ret);
+        return new AddressList(this.getId(), ret);
     }
     
     @Override

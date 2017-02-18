@@ -17,13 +17,13 @@ public class ChooseFile {
     private JFrame frame;
     public ChooseFile() {
         frame = new JFrame();
-
-        frame.setVisible(true);
         frame.setTitle(Loader.FILENAME_PROMPT);
         BringToFront();
     }
     public File getFile() {
         JFileChooser fc = new JFileChooser();
+        fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
+        fc.setFileFilter(FileNameExtensionFilterWithEmptyExt.getInstance());
         if(JFileChooser.APPROVE_OPTION == fc.showOpenDialog(null)){
             frame.setVisible(true);
             return fc.getSelectedFile();
@@ -32,9 +32,8 @@ public class ChooseFile {
     }
 
     private void BringToFront() {                  
-            frame.setExtendedState(JFrame.ICONIFIED);
-            frame.setExtendedState(JFrame.NORMAL);
-
+        frame.setExtendedState(JFrame.ICONIFIED);
+        frame.setExtendedState(JFrame.NORMAL);
     }
 
 }
